@@ -5,6 +5,7 @@ let display = document.getElementById("display");
 let botoes = document.querySelectorAll("button");
 
 botoes.forEach(function (botao) {
+
     botao.addEventListener("click", function () {
         let valor = botao.textContent;
 
@@ -41,7 +42,28 @@ botoes.forEach(function (botao) {
                 display.textContent += valor;
             }
         }
-
     });
 });
-
+document.addEventListener("keydown", function (event) {
+    let key = event.key;
+    if (key == "Enter" || key == "=") {
+        let expressao = display.textContent;
+        expressao = expressao.replace("x", "*");
+        display.textContent = eval(expressao);
+    } else if (key == "Backspace") {
+        let atual = display.textContent;
+        if (atual.length > 1) {
+            display.textContent = atual.slice(0, -1);
+        } else {
+            display.textContent = "0";
+        }
+    } else if (key == "Escape") {
+        display.textContent = "0";
+    } else {
+        if (display.textContent == "0") {
+            display.textContent = key;
+        } else {
+            display.textContent += key;
+        }
+    }
+});
