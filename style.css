@@ -44,7 +44,15 @@ button{
     cursor: pointer;
 }
 
-button:hover{
+button:hover {
     background-color: #555;
-
+}
+.btn-igual{
+    background-color: orange;
+}
+.btn-limpar{
+    background-color: red;
+}
+.btn-apagar{
+    background-color: orangered;
 }
