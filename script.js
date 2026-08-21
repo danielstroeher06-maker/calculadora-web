@@ -4,6 +4,8 @@ let display = document.getElementById("display");
 
 let botoes = document.querySelectorAll("button");
 
+let historico = []
+
 botoes.forEach(function (botao) {
 
     botao.addEventListener("click", function () {
@@ -12,9 +14,38 @@ botoes.forEach(function (botao) {
         if (valor == "C") {
             display.textContent = "0";
         } else if (valor == "=") {
-            let expressao = display.textContent;
-            expressao = expressao.replace("x", "*");
-            display.textContent = eval(expressao);
+            let expressaooriginal = display.textContent;
+            let expressao = display.textContent.replaceAll("x", "*");
+            let resultado;
+
+            try {
+                resultado = eval(expressao);
+            } catch (err) {
+                display.textContent = "Erro";
+                return;
+            }
+
+            if (isNaN(resultado) || !isFinite(resultado)) {
+                display.textContent = "Erro";
+                return;
+            }
+
+            resultado = parseFloat(resultado.toFixed(10));
+
+
+            if (historico.length >= 5) {
+                historico.shift();
+            }
+            historico.push(expressaooriginal + " = " + resultado);
+
+            let lista = document.getElementById("lista-historico");
+            lista.innerHTML = "";
+            historico.forEach(function (item) {
+                lista.innerHTML += "<li>" + item + "</li>";
+            });
+
+            display.textContent = resultado;
+
         } else if (valor == "←") {
             let atual = display.textContent;
             if (atual.length > 1) {
@@ -47,9 +78,39 @@ botoes.forEach(function (botao) {
 document.addEventListener("keydown", function (event) {
     let key = event.key;
     if (key == "Enter" || key == "=") {
-        let expressao = display.textContent;
-        expressao = expressao.replace("x", "*");
-        display.textContent = eval(expressao);
+        let expressaooriginal = display.textContent;
+        let expressao = display.textContent.replaceAll("x", "*");
+        let resultado;
+
+        try {
+            resultado = eval(expressao);
+        } catch (e) {
+            display.textContent = "Erro";
+            return;
+        }
+
+        if (isNaN(resultado) || !isFinite(resultado)) {
+            display.textContent = "Erro";
+            return;
+        }
+        resultado = parseFloat(resultado.toFixed(10));
+
+        if (historico.length >= 5) {
+            historico.shift();
+        }
+        historico.push(expressaooriginal + " = " + resultado);
+
+
+        let lista = document.getElementById("lista-historico");
+        lista.innerHTML = "";
+        historico.forEach(function (item) {
+            let li=document.createElement("li");
+            lista.appendChild(li);
+            li.textContent = item;
+        });
+
+        display.textContent = resultado;
+
     } else if (key == "Backspace") {
         let atual = display.textContent;
         if (atual.length > 1) {

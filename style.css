@@ -54,6 +54,8 @@ button{
     max-height: 200px;
     overflow-y: auto;
     border-radius: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 button:hover {
