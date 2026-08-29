@@ -4,7 +4,50 @@ let display = document.getElementById("display");
 
 let botoes = document.querySelectorAll("button");
 
-let historico = []
+let historico = JSON.parse(localStorage.getItem("operação"));
+
+if (historico == null) {
+    historico = [];
+}
+
+
+function addHistorico(expressaooriginal, resultado) {
+    if (historico.length >= 5) {
+        historico.shift();
+    }
+    historico.push(expressaooriginal + " = " + resultado);
+
+    localStorage.setItem("operação", JSON.stringify(historico));
+
+    let lista = document.getElementById("lista-historico");
+    lista.innerHTML = "";
+    historico.forEach(function (item) {
+        lista.innerHTML += "<li>" + item + "</li>";
+
+    });
+}
+
+function addCalcular(expressao) {
+    let resultado;
+    try {
+        resultado = eval(expressao);
+    } catch (err) {
+        display.textContent = "Erro";
+        return;
+    }
+
+    if (isNaN(resultado) || !isFinite(resultado)) {
+        display.textContent = "Erro";
+        return;
+    }
+
+    if (resultado == undefined) {
+        display.textContent = "Erro";
+        return;
+    }
+
+    return resultado;
+}
 
 botoes.forEach(function (botao) {
 
@@ -16,35 +59,13 @@ botoes.forEach(function (botao) {
         } else if (valor == "=") {
             let expressaooriginal = display.textContent;
             let expressao = display.textContent.replaceAll("x", "*");
-            let resultado;
+            let resultado = addCalcular(expressao);
 
-            try {
-                resultado = eval(expressao);
-            } catch (err) {
-                display.textContent = "Erro";
-                return;
-            }
-
-            if (isNaN(resultado) || !isFinite(resultado)) {
-                display.textContent = "Erro";
-                return;
-            }
 
             resultado = parseFloat(resultado.toFixed(10));
-
-
-            if (historico.length >= 5) {
-                historico.shift();
-            }
-            historico.push(expressaooriginal + " = " + resultado);
-
-            let lista = document.getElementById("lista-historico");
-            lista.innerHTML = "";
-            historico.forEach(function (item) {
-                lista.innerHTML += "<li>" + item + "</li>";
-            });
-
+            addHistorico(expressaooriginal, resultado);
             display.textContent = resultado;
+
 
         } else if (valor == "←") {
             let atual = display.textContent;
@@ -80,35 +101,12 @@ document.addEventListener("keydown", function (event) {
     if (key == "Enter" || key == "=") {
         let expressaooriginal = display.textContent;
         let expressao = display.textContent.replaceAll("x", "*");
-        let resultado;
+        let resultado = addCalcular(expressao);
 
-        try {
-            resultado = eval(expressao);
-        } catch (e) {
-            display.textContent = "Erro";
-            return;
-        }
 
-        if (isNaN(resultado) || !isFinite(resultado)) {
-            display.textContent = "Erro";
-            return;
-        }
+
         resultado = parseFloat(resultado.toFixed(10));
-
-        if (historico.length >= 5) {
-            historico.shift();
-        }
-        historico.push(expressaooriginal + " = " + resultado);
-
-
-        let lista = document.getElementById("lista-historico");
-        lista.innerHTML = "";
-        historico.forEach(function (item) {
-            let li=document.createElement("li");
-            lista.appendChild(li);
-            li.textContent = item;
-        });
-
+        addHistorico(expressaooriginal, resultado);
         display.textContent = resultado;
 
     } else if (key == "Backspace") {
