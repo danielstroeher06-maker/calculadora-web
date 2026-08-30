@@ -97,6 +97,10 @@ botoes.forEach(function (botao) {
     });
 });
 document.addEventListener("keydown", function (event) {
+
+    let tecla = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "+", "-", "*", "/", ".", "Enter", "Backspace", "Escape", "=", "%", "x"];
+
     let key = event.key;
     if (key == "Enter" || key == "=") {
         let expressaooriginal = display.textContent;
@@ -114,14 +118,14 @@ document.addEventListener("keydown", function (event) {
         if (atual.length > 1) {
             display.textContent = atual.slice(0, -1);
         } else {
-            display.textContent = "0";
+            display.textContent = "";
         }
     } else if (key == "Escape") {
         display.textContent = "0";
+    }else if (key == "%") {
+        display.textContent = eval(display.textContent) / 100;
     } else {
-        if (display.textContent == "0") {
-            display.textContent = key;
-        } else {
+        if (tecla.includes(key)) {
             display.textContent += key;
         }
     }
